@@ -1,1 +1,11 @@
 - In eventloop/timer.js, what will be the order of execution? Briefly explain the order of execution w.r.t the event loop phases.
+
+The main thread outputs foo baz foo baz, while bar(2) and bar(1) are added to the timers queue.
+Once the main thread is done, we go to the event loop and since there is no I/O to poll, the bar
+calls are moved to the pending callbacks and then executed. So, the full order is:
+foo
+baz
+foo
+baz
+2 : bar
+1 : bar

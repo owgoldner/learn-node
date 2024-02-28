@@ -1,2 +1,12 @@
 - Explain the order of execution in terms of the event loop for eventloop/immediate.js.
 - Will the order of execution change if timeout is changed to 0? Why or why not?
+
+The log order is data from the file, the immediate callback, and the timeout callback.
+There is nothing to do in the main thread, so first the event loop just waits for the
+file to be read. Then, the callback function is added to pending callbacks and executed
+because there is nothing else there yet. Inside that callback, we log the data right away,
+add the timeout function to timers, and the immediate function to check callbacks.
+Next, since there is no I/O left we look at pending (empty), then check which has the immediate function.
+This is moved to pending and taken care of, and then we finally run the timeout callback.
+This order will not change if the timeout is changed to 0 because the immediate callback is in
+the check queue and takes priority over any timers.

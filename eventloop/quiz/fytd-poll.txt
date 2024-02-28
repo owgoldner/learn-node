@@ -1,1 +1,11 @@
 - In eventloop/poll.js, what will be the order of execution? Briefly explain the order of execution w.r.t the event loop phases.
+
+readFile is called first but it is async, so it is completed on a worker thread and
+its result is sent to pending callbacks.
+foo and done are logged in order as part of the main thread, and then Read Error is 
+logged once the event loop starts and pending callbacks are cleared.
+
+output:
+foo
+done
+Read Error
